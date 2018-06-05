@@ -15,7 +15,7 @@
             <li v-on:click="clickNumber">9</li>
             <li v-on:click="clickNumber">10</li>
         </ul>
-        <img v-if="pending" id=”loader” src=”https://loading.io/spinners/double-ring/lg.double-ring-spinner.gif”>
+        <img v-if="pending" id=”loader” src='spinner.gif'>
         <div class='event' v-if='winEvent'>
             <p v-if='winEvent._status' id='has-won'><i aria-hidden='true' class='fa fa-check'></i> Congragulations, you have won {{winEvent._amount}} wei</p>
             <p v-else id='has-lost'><i aria-hidden='true' class='fa fa-check'></i> Sorry you lost, please try again.</p>
@@ -42,25 +42,25 @@ export default {
             console.log(event.target.innerHTML, this.amount)
             this.winEvent = null
             this.pending = true
+
+            // note that bet() emits the Won event
             this.$store.state.contractInstance().bet(event.target.innerHTML, {
                 gas: 30000,
                 value: this.$store.state.web3.web3Instance().toWei(this.amount, 'ether'),
                 from: this.$store.state.web3.coinbase
-            // eslint-disable-next-line
-            }, (err, result) => { // <- bet doesn't return results
+            }, (err, result) => {
                 if (err) {
                     console.log(err)
                     this.pending = false
                 } else {
-                    console.log('???')
-                    this.pending = false
+                    console.log(`result: ${result}`)
                     let Won = this.$store.state.contractInstance().Won()
-                    // eslint-disable-next-line
-                    Won.watch( (err, _) => {
-                        console.log('!!!')
+                    Won.watch( (err, result) => {
                         if (err) {
                             console.log('could not get event Won()')
                         } else {
+                            console.log(`winEvent: `)
+                            console.log(result.args)
                             this.winEvent = result.args
                             this.winEvent._amount = parseInt(result.args._amount, 10)
                             this.pending = false

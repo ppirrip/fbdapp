@@ -8,11 +8,30 @@ import Web3 from 'web3'
 * 5. Get user balance
 */
 
+/*
+Try this later:
+
+var Web3 = require('web3');
+var HDWalletProvider = require("truffle-hdwallet-provider");
+
+var web3 = new Web3(new HDWalletProvider("mnemonic mnemonic mnemonic mnemonic mnemonic", "https://mainnet.infura.io/"));
+
+another option:
+https://www.myetherapi.com/
+Ref: https://github.com/MyEtherWallet/myetherapi
+
+Another option: PubSub/Websocket (need Web3 v1 I assume)
+https://github.com/INFURA/infura/issues/73
+
+another thing to try -- connect to a local (geth) node! 
+*/
+
 let getWeb3 = new Promise(function (resolve, reject) {
     // Check for injected web3 (mist/metamask)
     var web3js = window.web3
     if (typeof web3js !== 'undefined') {
         var web3 = new Web3(web3js.currentProvider)
+        // var web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
         resolve({
             injectedWeb3: web3.isConnected(),
             web3() {
